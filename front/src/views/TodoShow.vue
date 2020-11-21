@@ -1,9 +1,19 @@
 <template>
   <div>
-    <h3 class="sub-title">
-      {{ task.text }}
-    </h3>
-    <button class="delete-button" @click="deleteTask(task.id)">削除</button>
+    <div v-if="updateFlg">
+      <div>
+        <input id="update-task-form" type="text" v-model="updateTaskText" placeholder="Todoを入力してね！">
+      </div>
+      <button class="cancel-button" @click="cancelTask()">キャンセル</button>
+      <button class="update-button" @click="updateTask()">変更</button>
+    </div>
+    <div v-else>
+      <h3 class="sub-title">
+        {{ task.text }}
+      </h3>
+      <button class="change-button" @click="changeTask()">変更</button>
+      <button class="delete-button" @click="deleteTask()">削除</button>
+    </div>
     <div>
       <router-link to="/" class="todolist-link">Todo一覧</router-link>
     </div>
@@ -20,7 +30,9 @@ export default {
   props: ["id"],
   data() {
     return {
-      task: []
+      updateFlg: false,
+      task: [],
+      updateTaskText: ""
     }
   },
   methods: {
@@ -33,10 +45,10 @@ export default {
         console.log(error);
       });
     },
-    deleteTask: function(task_id){
-      var result = window.confirm("本当に削除しますか？");
+    deleteTask: function(){
+      var result = window.confirm("削除しますか？");
       if (result) {
-        axios.delete(`http://${hostName}${path}/${task_id}`)
+        axios.delete(`http://${hostName}${path}/${this.task.id}`)
         .then(() => {
           this.$router.push({ 
             name: "Home"
@@ -45,6 +57,30 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
+      }
+    },
+    changeTask: function() {
+      this.updateFlg = true
+      this.updateTaskText = this.task.text
+    },
+    cancelTask: function() {
+      this.updateFlg = false
+    },
+    updateTask: function() {
+      if (this.updateTaskText != "") {
+        axios.put(`http://${hostName}${path}/${this.task.id}`,
+          `task[text]=${this.updateTaskText}`
+        )
+        .then(() => {
+          this.updateFlg = false
+          this.getTask();
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+      }
+      else {
+        this.deleteTask();
       }
     }
   },

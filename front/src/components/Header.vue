@@ -1,17 +1,18 @@
 <template>
   <div class="header">
-    <h1 class="header-title">Todoアプリ</h1>
+    <router-link to="/" class="header-title">Todoアプリ</router-link>
   </div>
 </template>
 
 <style scoped>
 .header {
   background: #333333;
-  color: #FFFFFF
 }
 
 .header-title {
   font-size: 4rem;
   padding: 20px 50px;
+  color: #FFFFFF;
+  text-decoration: none;
 }
 </style>
