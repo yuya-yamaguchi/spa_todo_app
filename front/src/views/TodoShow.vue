@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div v-if="task.complete_flg" class="complete-todo-comment">
+        このTodoは完了済です
+      </div>
     <div v-if="updateFlg">
       <div>
         <input id="update-task-form" type="text" v-model="updateTaskText" placeholder="Todoを入力してね！">
@@ -13,6 +16,9 @@
       </h3>
       <button class="change-button" @click="changeTask()">変更</button>
       <button class="delete-button" @click="deleteTask()">削除</button>
+      <div v-if="!task.complete_flg">
+        <button class="complete-button" @click="completeTask()">Todoを完了</button>
+      </div>
     </div>
     <div>
       <router-link to="/" class="todolist-link">Todo一覧</router-link>
@@ -82,6 +88,15 @@ export default {
       else {
         this.deleteTask();
       }
+    },
+    completeTask: function() {
+      axios.post(`http://${hostName}${path}/${this.task.id}/complete`)
+      .then(() => {
+        this.getTask();
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
     }
   },
   mounted: function() {
@@ -97,5 +112,10 @@ export default {
 
 .todolist-link {
   font-size: 1.2rem;
+}
+
+.complete-todo-comment{
+  font-size: 0.8rem;
+  color: #888888
 }
 </style>
