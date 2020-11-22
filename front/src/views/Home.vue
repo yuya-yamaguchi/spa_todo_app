@@ -8,6 +8,7 @@
         <router-link :to="{ name: 'TodoShow', params: { id: task.id }}">
           {{ i + 1 }} {{ task.text }}
         </router-link>
+        <p v-if="task.complete_flg" class="complete-sign">完了</p>
       </li>
     </ul>
   </div>
@@ -90,4 +91,9 @@ li {
   list-style: none;
 }
 
+.complete-sign{
+  font-size: 0.6rem;
+  color: red;
+  width: 100px;
+}
 </style>
